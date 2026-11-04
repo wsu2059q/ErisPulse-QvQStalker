@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ErisPulse-QvQStalker"
+version = "0.1.0"
+description = "ErisPulse 群聊参与决策插件：旁听群消息、五层插话判定、冲动值主动发言 —— Group participation decision plugin for ErisPulse (QvQChat companion)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "ErisPulse>=2.8.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.urls]
+"homepage" = "https://github.com/wsu2059q/ErisPulse-QvQStalker"
+"Issues" = "https://github.com/wsu2059q/ErisPulse-QvQStalker/issues"
+
+[project.entry-points."erispulse.module"]
+"QvQStalker" = "QvQStalker:Main"
+
+[tool.setuptools.packages.find]
+include = ["QvQStalker*"]
+
+# uv 配置
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
