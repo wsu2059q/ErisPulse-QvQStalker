@@ -312,4 +312,22 @@ async def test_qvq_conventions_schemas_access_extensions():
     access = await main.qvq_access()
     assert access["request_speak"] == "admin" and access["group_heat"] == "safe"
     ext = await main.qvq_extensions()
-    assert ext["prompts"] and "request_speak" in ext["prompts"][0]["text"]
+    assert ext["prompts"] and any("request_speak" in p["text"] for p in ext["prompts"])
+
+
+async def test_extension_prompts_social_style():
+    """0.2.0 社交说话准则：能量匹配/禁AI腔（不打字墙）+ 熟人语气/接情绪/话题跟进。"""
+    main = make_main()
+    ext = await main.qvq_extensions()
+    texts_prompt = [p["text"] for p in ext["prompts"]]
+    joined = "\n".join(texts_prompt)
+    assert "匹配对方的能量" in joined          # 能量匹配
+    assert "不会突然打一大段字" in joined       # 真人不打字墙
+    assert "很高兴帮助你" in joined             # 禁 AI 腔（引用客服话术）
+    assert "镜像对方风格" in joined             # 风格镜像
+    assert "熟人" in joined                     # 熟悉度演进
+    assert "接住情绪" in joined                 # 先共情再方案
+    assert "跟进" in joined                     # TODO 话题跟进
+    # 准则条目 priority 高于参与决策条目（排序后靠前）
+    priorities = [p.get("priority", 0) for p in ext["prompts"]]
+    assert priorities[0] >= 5

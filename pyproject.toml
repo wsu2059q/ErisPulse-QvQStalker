@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ErisPulse-QvQStalker"
-version = "0.1.0"
+version = "0.2.0"
 description = "ErisPulse 群聊参与决策插件：旁听群消息、五层插话判定、冲动值主动发言 —— Group participation decision plugin for ErisPulse (QvQChat companion)"
 readme = "README.md"
 requires-python = ">=3.10"
