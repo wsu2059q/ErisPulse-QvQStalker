@@ -41,8 +41,8 @@ class QvQStalkerConfig(BaseConfig):
     # ---- 插话判定（五层） ----
     mode: str = field(
         default="balanced",
-        metadata=_desc("mode", "参与模式：conservative 保守（不随机插话，仅提问层生效）/ balanced 平衡 / active 积极（基础概率翻倍）",
-                       "decision", 1, "select", ["conservative", "balanced", "active"]),
+        metadata=_desc("mode", "参与模式：strict 超保守（仅 @/回复机器人时参与，绝不主动插话）/ conservative 保守（不随机插话，仅提问层生效）/ balanced 平衡 / active 积极（基础概率翻倍）",
+                       "decision", 1, "select", ["strict", "conservative", "balanced", "active"]),
     )
     default_probability: float = field(
         default=0.03,

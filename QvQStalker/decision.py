@@ -52,8 +52,8 @@ QUESTION_PATTERNS = [
 
 _COMPILED = [re.compile(p) for p in QUESTION_PATTERNS]
 
-# 模式 → 基础概率倍数（conservative 不随机发言）
-MODE_MULT: dict[str, int] = {"conservative": 0, "balanced": 1, "active": 2}
+# 模式 → 基础概率倍数（strict/conservative 不随机发言；strict 在入口前置门直接短路）
+MODE_MULT: dict[str, int] = {"strict": 0, "conservative": 0, "balanced": 1, "active": 2}
 
 QUESTION_HEAT_BONUS = 0.3    # 提问层热度加成
 QUESTION_PROB_CAP = 0.95
@@ -126,6 +126,13 @@ class DecisionProvider:
         cfg = self._cfg_get()
         text = str(ctx.get("text") or "")
         heat = self.heat.get(chat_key)
+
+# ---- 超保守（strict）：只应答点名（@ / 回复机器人消息），不进任何随机/升级层 ----
+        mode = str(getattr(cfg, "mode", "balanced") or "balanced")
+        if mode == "strict":
+            if bool(ctx.get("at_bot")) or bool(ctx.get("reply_to_bot")):
+                return _result("speak", texts.t("reason_strict_addressed"), 1.0, URGENCY_HIGH)
+            return _result("silent", texts.t("reason_strict"), 0.0, URGENCY_LOW)
 
         # ---- L1 提问关键词（零成本） ----
         if text and is_question(text):

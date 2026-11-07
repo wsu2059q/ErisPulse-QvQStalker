@@ -218,6 +218,26 @@ async def test_conservative_never_random_speaks():
         assert result["reason"] == texts.t("reason_conservative")
 
 
+async def test_strict_mode_only_direct_address():
+    """超保守：提问关键词/热度/沉寂/小模型全部不进；仅 @ 或回复机器人时参与。"""
+    cfg = make_config(mode="strict", question_prob=1.0, llm_judge=False)
+    provider, heat, _ = make_provider(cfg, judge=JudgeStub("是"))
+    heat.set(GKEY, 1.5)
+    random.seed(1)
+    # 提问、高热度、普通消息一律沉默
+    for text in ("这是什么？", "怎么做到的", "普通消息"):
+        result = await provider.qvq_decision(ctx(text=text))
+        assert result["decision"] == "silent", text
+        assert result["reason"] == texts.t("reason_strict")
+    # 点名即应答（@ 命中最前面的确定性触发门，reason 用 its 文案；回复机器人命中 strict 门）
+    result = await provider.qvq_decision(ctx(text="你好", at_bot=True))
+    assert result["decision"] == "speak"
+    result = await provider.qvq_decision(ctx(text="你说得对", reply_to_bot=True))
+    assert result["decision"] == "speak" and result["reason"] == texts.t("reason_strict_addressed")
+    result = await provider.qvq_decision(ctx(text="你说得对", reply_to_bot=True))
+    assert result["decision"] == "speak" and result["reason"] == texts.t("reason_strict_addressed")
+
+
 async def test_conservative_question_layer_still_works():
     cfg = make_config(mode="conservative", question_prob=1.0)
     provider, _, _ = make_provider(cfg)

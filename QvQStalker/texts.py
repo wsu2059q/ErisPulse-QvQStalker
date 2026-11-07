@@ -48,6 +48,14 @@ STRINGS: dict[str, dict[str, str]] = {
         "zh-CN": "保守模式（conservative）：基础插话概率归零，仅提问层生效",
         "en": "Conservative mode: base join probability is zero; only the question layer applies",
     },
+    "reason_strict": {
+        "zh-CN": "超保守模式（strict）：未被点名，保持沉默",
+        "en": "Strict mode: not directly addressed; stay silent",
+    },
+    "reason_strict_addressed": {
+        "zh-CN": "超保守模式（strict）：被点名（@/回复机器人），直接参与",
+        "en": "Strict mode: directly addressed (@/reply to the bot); join",
+    },
     "reason_llm_speak": {
         "zh-CN": "触发 {source}，小模型判断「该接这句话」",
         "en": "{source} triggered; small-model judge says join",
