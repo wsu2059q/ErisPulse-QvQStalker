@@ -349,3 +349,20 @@ def test_parse_judge_answer(answer, expected):
 def test_parse_judge_answer_non_string():
     assert parse_judge_answer(None) is None
     assert parse_judge_answer(123) is None
+
+
+# ==================== bot 互逗（纯提示词认知） ====================
+
+def test_judge_prompt_contains_bot_awareness_clause():
+    """judge prompt 常驻 bot 认知条款（第 4 条）：AI 从行为自判其它机器人。"""
+    prompt = texts.t("judge_prompt", window="w", sender="s", text="t", mention_note="m")
+    assert ("别的机器人" in prompt or "other bots" in prompt.lower()) and "[bot]" in prompt
+
+
+def test_window_snapshot_marks_bot_lines():
+    """旁听摘要给同后端 bot 发言加 [bot] 标注（判定与发言模型都可见）。"""
+    w = MessageWindow(size=10)
+    w.add(GKEY, "签到出凶了", sender_id="sib", sender_name="Pippins", sender_is_bot=True)
+    w.add(GKEY, "哈哈哈哈", sender_id="u9", sender_name="小明")
+    snap = w.snapshot_text(GKEY)
+    assert "[bot]Pippins" in snap and "小明" in snap and "[bot]小明" not in snap

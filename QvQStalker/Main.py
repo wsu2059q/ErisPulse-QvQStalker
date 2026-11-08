@@ -46,7 +46,7 @@ from .fewshot import FewShotPools
 from .observe import MessageWindow
 from .proactive import ProactiveLoop, UrgeState
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 OBSERVE_EVENT = "qvq.observe"
 REPLIED_EVENT = "qvq.replied"
@@ -366,6 +366,7 @@ class Main(BaseModule):
                 at_bot=bool(data.get("at_bot")),
                 reply_to_bot=bool(data.get("reply_to_bot")),
                 platform=str(data.get("platform") or ""),
+                sender_is_bot=bool(data.get("sender_is_bot")),
             )
             heat = self.heat.update(chat_key, text, now=entry["ts"])
             self.urge.feed(chat_key, text,

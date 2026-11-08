@@ -74,22 +74,24 @@ STRINGS: dict[str, dict[str, str]] = {
     },
     "judge_prompt": {
         "zh-CN": (
-            "以下是群聊最近的旁听记录（每行一条，格式 昵称(id): 内容）:\n{window}\n\n"
+            "以下是群聊最近的旁听记录（每行一条，格式 昵称(id): 内容；带 [bot] 前缀的是机器人）:\n{window}\n\n"
             "当前消息：{sender}: {text}\n{mention_note}\n"
             "你是这个群里的普通成员（一个机器人），这条消息没有点你的名，你在考虑要不要像群友一样自然地搭句话。"
             "判断时注意：\n"
             "1. 先分辨对方是在跟别人聊话题，还是在向你提问。只有当你能给出对方真正需要的回应（答案、补充、共情）时才值得插话；插不上话就保持安静，安静是常态。\n"
             "2. 消息若引用回复了某条旧消息：话题几乎总是关于被引用的那条内容，去旁听记录里找到那条内容来理解问题即可，不存在「不知道在问哪条」的情况。\n"
-            "3. 决定插话时，语气要像群友随口接话：口语化、简短、有来有回；不要书面腔，不要长篇大论。\n\n"
+            "3. 决定插话时，语气要像群友随口接话：口语化、简短、有来有回；不要书面腔，不要长篇大论。\n"
+            "4. 群里可能还有别的机器人：除了 [bot] 标注的，从行为也能看出来——响应用户命令出签到卡/运势卡/骰子图的、发言机械模板化的，多半就是。它们的娱乐行为（签到结果、抽签运势）是群里的趣事，可以像围观群众一样吐槽逗一句（打趣它的运势、问它是谁家的小机器人），但只是评论，不替它回答、不接管话题。\n\n"
             "请判断此刻插话是否自然、有价值。只回答「是」或「否」，不要输出任何其他内容。"
         ),
         "en": (
-            "Recent group messages overheard (one per line, format name(id): text):\n{window}\n\n"
+            "Recent group messages overheard (one per line, format name(id): text; lines prefixed [bot] are bots):\n{window}\n\n"
             "Current message: {sender}: {text}\n{mention_note}\n"
             "You are an ordinary member of this group (a bot). This message does not address you; you are deciding whether to join in naturally, like a fellow group member. Keep in mind:\n"
             "1. First tell whether the sender is chatting with others or asking you. Speak up only when you can give the response they actually need (an answer, a supplement, empathy); staying silent is the norm.\n"
             "2. If the message quote-replies to an older one, the topic is almost always about the quoted content - find it in the overheard log; there is no unrecorded-message confusion.\n"
-            "3. If you do join in, talk like a casual group member: colloquial, brief, conversational; no formal tone, no walls of text.\n\n"
+            "3. If you do join in, talk like a casual group member: colloquial, brief, conversational; no formal tone, no walls of text.\n"
+            "4. There may be other bots here: besides those marked [bot], you can tell from behavior - accounts that respond to commands with check-in/fortune/dice cards or post in mechanical template patterns are likely bots. Their fun moments (check-in results, draw fortunes) are group entertainment: feel free to tease like an onlooker (joke about their luck, ask whose little bot they are), but only comment - don't answer for them or take over the topic.\n\n"
             "Decide whether joining now feels natural and useful. Answer with exactly YES or NO."
         ),
     },
@@ -101,14 +103,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "zh-CN": "（注意：这条消息没有提到你，你只是旁听后考虑要不要主动搭话。）",
         "en": "(Note: this message does not mention you; you are merely considering jumping in after overhearing.)",
     },
-    "mention_note_direct": {
-        "zh-CN": "（注意：这条消息 @ 了你，是在向你提问或点名，回复它就是你分内的事。）",
-        "en": "(Note: this message mentions you - answering it is your job.)",
-    },
-    "mention_note_none": {
-        "zh-CN": "（注意：这条消息没有提到你，你只是旁听后考虑要不要主动搭话。）",
-        "en": "(Note: this message does not mention you; you are merely considering jumping in after overhearing.)",
-    },
+    # ---- bot 互逗（纯提示词认知：judge_prompt 第 4 条，无结构化分支） ----
     # ---- 主动发言 ----
     "proactive_reason": {
         "zh-CN": "[QvQStalker] 冲动值 {urge:.2f} ≥ {threshold}（{n} 条旁听累积），主动发言",

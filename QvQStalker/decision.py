@@ -192,7 +192,7 @@ class DecisionProvider:
 
     async def _ask_judge(self, cfg, ctx: dict, chat_key: str, text: str, heat: float,
                          gap: float, heat_flag: bool, silence_wake: bool) -> dict | None:
-        """L5 小模型单问；返回完整结果 dict，失败返回 None（回落 L4）。"""
+        """L5 小模型单问；返回完整结果 dict，失败返回 None（回落概率层）。"""
         if heat_flag:
             source = texts.t("source_heat", heat=heat)
         else:

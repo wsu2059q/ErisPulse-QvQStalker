@@ -30,7 +30,7 @@ class MessageWindow:
 
     def add(self, chat_key: str, text: str, sender_id: str = "", sender_name: str = "",
             ts: float | None = None, at_bot: bool = False, reply_to_bot: bool = False,
-            platform: str = "") -> dict:
+            platform: str = "", sender_is_bot: bool = False) -> dict:
         """入窗一条旁听消息，返回入窗的条目（含归一化的 ts）。"""
         entry = {
             "chat_key": str(chat_key or ""),
@@ -41,6 +41,8 @@ class MessageWindow:
             "at_bot": bool(at_bot),
             "reply_to_bot": bool(reply_to_bot),
             "platform": str(platform or ""),
+# 发话者是同后端其它 bot（QvQChat ≥4.6.0 的 observe 载荷携带；旧载荷缺省 False）
+            "sender_is_bot": bool(sender_is_bot),
         }
         with self._lock:
             window = self._windows.get(chat_key)
@@ -70,11 +72,16 @@ class MessageWindow:
         return [dict(item) for item in items]
 
     def snapshot_text(self, chat_key: str, limit: int = 10) -> str:
-        """把最近 limit 条旁听格式化为多行文本（供 LLM prompt / speak 摘要）。"""
+        """把最近 limit 条旁听格式化为多行文本（供 LLM prompt / speak 摘要）。
+
+        兄弟 bot 的发言带 [bot] 标注——判定与发言模型都借此识别"对方也是机器人"。
+        """
         lines = []
         for item in self.recent(chat_key, limit):
             name = item.get("sender_name") or item.get("sender_id") or "?"
             sid = item.get("sender_id") or "?"
+            if item.get("sender_is_bot"):
+                name = f"[bot]{name}"
             text = str(item.get("text") or "").strip()
             if text:
                 lines.append(f"{name}({sid}): {text}")
